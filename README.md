@@ -17,9 +17,16 @@ REQUIRES: [kit](http://github.com/flipcoder/kit)
 
 ## Usage
 
+Atlhough not all actions are implmented, below is the intended usage:
+
 ###Load a folder into RAM
 ```
 rpg folder
+```
+
+###View status
+```
+rpg
 ```
 
 ###See diff 
