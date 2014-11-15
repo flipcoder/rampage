@@ -1,6 +1,7 @@
 Rampage (RPG)
 ===
 Quickly mount/unmount existing folders to RAM
+Status: Just started! DON'T USE THIS YET!
 
 Copyright (c) 2014 Grady O'Connell
 
@@ -10,7 +11,6 @@ Then push back changes when done, merge tool optional.
 
 Platform: Linux
 
-Status: Just started! Don't use this yet!
 
 REQUIRES: [kit](http://github.com/flipcoder/kit)
 
