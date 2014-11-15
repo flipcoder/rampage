@@ -1,4 +1,4 @@
-Rampage (RPG)
+Rampage
 ===
 Quickly mount/unmount existing folders to RAM
 
