@@ -20,18 +20,22 @@ int main(int argc, const char *argv[])
     //proc.wait();
     if(args.has("-d"))
     {
-        for(string& dir: args)
+        for(unsigned i=0;;++i)
         {
-            system(string(
-                string("diff")
-                +" \""+ 
-                    (string(".")+dir+".rpg")
-                +"\" \""+
-                    (string("/dev/shm/rpg/")+dir)
-                +"\""
-            ).c_str());
-            return 1;
+            string dir = args.get(i);
+            if(dir.empty())
+                break;
+            if(boost::starts_with(dir, "-"))
+                continue;
+            string t1 = string(".")+dir+".rpg";
+            string t2 = string("/dev/shm/rpg/")+dir;
+            pid_t pid = fork();
+            if(0 == pid)
+                execl("/bin/diff", "diff", t1.c_str(), t2.c_str(), (char*)NULL);
+            int status;
+            waitpid(pid, &status, 0);
         }
+        return 1;
     }
     
     if(args.has("-r"))
@@ -42,8 +46,12 @@ int main(int argc, const char *argv[])
         return 1;
     }
     
-    for(string& dir: args)
+    for(unsigned i=0;;++i)
     {
+        string dir = args.get(i);
+        if(dir.empty())
+            break;
+
         int r;
         string t1, t2;
         //char buf[PATH_MAX];
