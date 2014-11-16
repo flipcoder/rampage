@@ -37,11 +37,14 @@ int main(int argc, const char *argv[])
                 break;
             if(boost::starts_with(dir, "-"))
                 continue;
-            string t1 = string("/dev/shm/rpg/")+dir;
-            string t2 = string(".")+dir+".rpg";
             pid_t pid = fork();
             if(0 == pid)
-                execl("/bin/diff", "diff", "-rupN", t1.c_str(), t2.c_str(), (char*)NULL);
+                execl(
+                    "/bin/diff", "diff", "-rupN",
+                    (string("/dev/shm/rpg/")+dir).c_str(),
+                    (string(".")+dir+".rpg").c_str(),
+                    (char*)NULL
+                );
             int status;
             waitpid(pid, &status, 0);
         }
@@ -62,23 +65,23 @@ int main(int argc, const char *argv[])
         if(dir.empty())
             break;
 
-        int r;
-        string t1, t2;
-        t2 = string("/dev/shm/rpg/");
         pid_t pid = fork();
         if(0 == pid)
-            execl("/bin/cp", "cp", "-r", dir.c_str(), t2.c_str(), (char*)NULL);
+            execl(
+                "/bin/cp", "cp", "-r",
+                dir.c_str(), string("/dev/shm/rpg/").c_str(),
+                (char*)NULL
+            );
         int status;
         waitpid(pid, &status, 0);
-        t2 = string(".") + dir + ".rpg";
-        if(0 != rename(dir.c_str(), t2.c_str())) {
+        if(0 != rename(dir.c_str(), (string(".") + dir + ".rpg").c_str())) {
             cerr << "Cannot enrage. (rename failed)" << endl;
-            t1 = string("/dev/shm/rpg/")+dir;
-            unlink(t1.c_str());
+            unlink((string("/dev/shm/rpg/")+dir).c_str());
             return 1;
         }
-        t1 = string("/dev/shm/rpg/") + dir;
-        if(0 != symlink(t1.c_str(), dir.c_str())) {
+        if(0 != symlink(
+            (string("/dev/shm/rpg/") + dir).c_str(), dir.c_str())
+        ){
             cerr << "Cannot enrage. (symlink failed)"<< endl;
             rename((string(".")+ dir + ".rpg").c_str(), dir.c_str());
             unlink((string("/dev/shm/rpg/")+dir).c_str());
