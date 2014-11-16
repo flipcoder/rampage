@@ -10,6 +10,16 @@
 
 using namespace std;
 
+//int run(string prog, vector<string> args)
+//{
+//    pid_t pid = fork();
+//    if(0 == pid)
+//        execl(prog, prog, // (char*)NULL);
+//    int status;
+//    waitpid(pid, &status, 0);
+//    return status;
+//}
+
 int main(int argc, const char *argv[])
 {
     // ensure rpg dir
@@ -27,11 +37,11 @@ int main(int argc, const char *argv[])
                 break;
             if(boost::starts_with(dir, "-"))
                 continue;
-            string t1 = string(".")+dir+".rpg";
-            string t2 = string("/dev/shm/rpg/")+dir;
+            string t1 = string("/dev/shm/rpg/")+dir;
+            string t2 = string(".")+dir+".rpg";
             pid_t pid = fork();
             if(0 == pid)
-                execl("/bin/diff", "diff", t1.c_str(), t2.c_str(), (char*)NULL);
+                execl("/bin/diff", "diff", "-rupN", t1.c_str(), t2.c_str(), (char*)NULL);
             int status;
             waitpid(pid, &status, 0);
         }
@@ -54,9 +64,6 @@ int main(int argc, const char *argv[])
 
         int r;
         string t1, t2;
-        //char buf[PATH_MAX];
-        //getcwd(buf, PATH_MAX);
-        //t1 = string(buf) + "/"+ dir;
         t2 = string("/dev/shm/rpg/");
         pid_t pid = fork();
         if(0 == pid)
