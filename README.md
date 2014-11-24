@@ -17,6 +17,8 @@ REQUIRES: [kit](http://github.com/flipcoder/kit)
 
 ## Usage
 
+**Always back up your data before using a program like this.**
+
 Atlhough not all actions are implmented, below is the intended usage:
 
 ###Load a folder into RAM
@@ -24,25 +26,37 @@ Atlhough not all actions are implmented, below is the intended usage:
 rpg folder
 ```
 
-###View status
+###View the status of all rampaged folders
 ```
 rpg
 ```
 
-###See diff 
+###View diff between RAM and HD versions
 ```
 rpg -d folder
 ```
 
-###Write changes (from RAM) back to HD
+###Write changes (from RAM) back to HD without unmounting
 ```
 rpg -w folder
 ```
 
-###Discard change
+###Unmount a folder, remove RAM symlink, and restore old (HD) version
+```
+rpg -u folder
+```
+
+###Discard ALL changes made to RAM version and unmount
 ```
 rpg -x folder
 ```
+
+If your computer crashes while a folder is rampaged, you will only lose unwritten RAM changes.
+The original HD version is stored at .<folder-name>.rpg. as a backup.  The broken symlink in its
+place may be safely deleted.
+
+Right now, folders are rampaged on a folder-name-basis.
+You will not yet be able to rampage folders of similar names (yet).
 
 ===
 
