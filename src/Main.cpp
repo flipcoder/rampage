@@ -63,6 +63,29 @@ int main(int argc, const char *argv[])
         return 1;
     }
     
+    // write back changes (but don't unmount)
+    if(args.has("-w")) for(unsigned i=0;;++i)
+    {
+        string dir = args.get(i);
+        if(dir.empty())
+            break;
+        if(boost::starts_with(dir,"-"))
+            continue;
+        int status = run(
+            "/bin/rsync",
+            {
+                "-rav", // recursive
+                string("/dev/shm/rpg/") + dir + "/",
+                string(".") + dir + ".rpg"
+            }
+        );
+        if(0 != status) {
+            cerr << "Cannot restore. (copy failed)" << endl;
+            return 1;
+        }
+        return 0;
+    }
+    
     if(not args.empty()) for(unsigned i=0;;++i)
     {
         string dir = args.get(i);
@@ -70,9 +93,10 @@ int main(int argc, const char *argv[])
             break;
 
         int status = run(
-            "/bin/cp",
+            "/bin/rsync",
             {
-                "-r",
+                "-r", // recursive
+                "-ltpg", // preserve symlinks times,perms,groups
                 dir,
                 "/dev/shm/rpg/"
             }
