@@ -19,7 +19,7 @@ REQUIRES: [kit](http://github.com/flipcoder/kit)
 
 **Always back up your data before using a program like this.**
 
-Atlhough not all actions are implmented, below is the intended usage:
+Although not all actions are implmented, below is the intended usage:
 
 ###Load a folder into RAM
 ```
