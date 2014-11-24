@@ -52,7 +52,7 @@ rpg -x folder
 ```
 
 If your computer crashes while a folder is rampaged, you will only lose unwritten RAM changes.
-The original HD version is stored at .<folder-name>.rpg. as a backup.  The broken symlink in its
+The original HD version is stored at *.FOLDER.rpg*. as a backup.  The broken symlink in its
 place may be safely deleted.
 
 Right now, folders are rampaged on a folder-name-basis.
