@@ -12,6 +12,25 @@
 
 using namespace std;
 
+static const char USAGE[] =
+R"(rampage
+
+    Quickly mount/unmount existing folders to RAM
+    
+    Usage:
+      rpg <dir>
+      
+    Options:
+      -d View diff between rampage and disk.
+      -w Write changes from rampage to disk.
+      -r Restore disk files w/o committing changes.
+      -l List rampages.
+      
+      https://github.com/flipcoder/rampage
+      Copyright (c) 2015 Grady O'Connell
+)";
+
+
 int run(string prog, vector<string> args)
 {
     // make space for prog name and null
@@ -34,7 +53,7 @@ int main(int argc, const char *argv[])
     // ensure rpg dir
     if(mkdir((tmppath + "rpg/").c_str(), 0755) != 0) {}
     
-    Args args(argc, argv);
+    Args args(argc, argv, USAGE);
     //auto proc = command("du", {"-h","-c","-s"});
     //proc.wait();
     if(args.has("-d"))
@@ -88,13 +107,21 @@ int main(int argc, const char *argv[])
         }
         return 0;
     }
+
+    if(args.has("-l"))
+    {
+        cout << "Rampages:" << endl;
+        run("/bin/ls", {tmppath + "rpg/"});
+    }
     
     if(not args.empty()) for(unsigned i=0;;++i)
     {
         string dir = args.get(i);
         if(dir.empty())
             break;
-
+        if(boost::starts_with(dir,"-"))
+            continue;
+        
         int status = run(
             "/bin/rsync",
             {
@@ -131,9 +158,7 @@ int main(int argc, const char *argv[])
     }
     else
     {
-        // no app parameters
-        cout << "Rampages: " << endl;
-        run("/bin/ls", {tmppath + "rpg/"});
+        cout << USAGE << endl;
     }
     
     return 0;
