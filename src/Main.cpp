@@ -1,10 +1,11 @@
 //#include <algorithm>
 #include "kit/kit.h"
 #include "kit/log/log.h"
-#include "kit/async/multiplexer.h"
 #include "kit/args/args.h"
 #include "kit/meta/meta.h"
 
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <unistd.h> 
@@ -28,8 +29,10 @@ int run(string prog, vector<string> args)
 
 int main(int argc, const char *argv[])
 {
+    string tmppath = "/dev/shm/";
+    
     // ensure rpg dir
-    if(mkdir("/dev/shm/rpg/", 0755) != 0) {}
+    if(mkdir((tmppath + "rpg/").c_str(), 0755) != 0) {}
     
     Args args(argc, argv);
     //auto proc = command("du", {"-h","-c","-s"});
@@ -47,7 +50,7 @@ int main(int argc, const char *argv[])
                 "/bin/diff",
                 {
                     "-rupN",
-                    string("/dev/shm/rpg/")+dir,
+                    tmppath + "rpg/" + dir,
                     string(".")+dir+".rpg"
                 }
             );
@@ -59,7 +62,7 @@ int main(int argc, const char *argv[])
     {
         cout << "Not yet imlemented. A backup of your files is in .<folder>-rpg (hidden)" << endl;
         cout << "The <folder> syslink contains the ram-mounted files." << endl;
-        cout << "Your ram files are at /dev/shm/rpg/<folder>/" << endl;
+        cout << "Your ram files are at " << tmppath << "rpg/<folder>/" << endl;
         return 1;
     }
     
@@ -75,7 +78,7 @@ int main(int argc, const char *argv[])
             "/bin/rsync",
             {
                 "-rav", // recursive
-                string("/dev/shm/rpg/") + dir + "/",
+                tmppath + "rpg/" + dir + "/",
                 string(".") + dir + ".rpg"
             }
         );
@@ -98,13 +101,13 @@ int main(int argc, const char *argv[])
                 "-r", // recursive
                 "-ltpg", // preserve symlinks times,perms,groups
                 dir,
-                "/dev/shm/rpg/"
+                tmppath + "rpg/"
             }
         );
 
         //auto detail = make_shared<Meta>();
         //detail->set<string>("path","");
-        //detail->serialize(string("/dev/shm/rpg/")+dir+".json");
+        //detail->serialize(tmppath + "rpg/"+dir+".json");
         
         if(0 != status) {
             cerr << "Cannot enrage. (copy failed)" << endl;
@@ -112,15 +115,15 @@ int main(int argc, const char *argv[])
         }
         if(0 != rename(dir.c_str(), (string(".") + dir + ".rpg").c_str())) {
             cerr << "Cannot enrage. (rename failed)" << endl;
-            unlink((string("/dev/shm/rpg/")+dir).c_str());
+            unlink((tmppath + "rpg/" +dir).c_str());
             return 1;
         }
         if(0 != symlink(
-            (string("/dev/shm/rpg/") + dir).c_str(), dir.c_str())
+            (tmppath + "rpg/" + dir).c_str(), dir.c_str())
         ){
             cerr << "Cannot enrage. (symlink failed)"<< endl;
             rename((string(".")+ dir + ".rpg").c_str(), dir.c_str());
-            unlink((string("/dev/shm/rpg/")+dir).c_str());
+            unlink((tmppath+"rpg/"+dir).c_str());
             return 1;
         }
         cout << dir << " has went on a rampage!" << endl;
@@ -130,7 +133,7 @@ int main(int argc, const char *argv[])
     {
         // no app parameters
         cout << "Rampages: " << endl;
-        run("/bin/ls", {"/dev/shm/rpg/"});
+        run("/bin/ls", {tmppath + "rpg/"});
     }
     
     return 0;
