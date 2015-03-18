@@ -23,7 +23,7 @@ R"(rampage
     Options:
       -d View diff between rampage and disk.
       -w Write changes from rampage to disk.
-      -r Restore disk files w/o committing changes.
+      -r Restore disk files w/o committing changes (no impl).
       -l List rampages.
       
       https://github.com/flipcoder/rampage
@@ -132,10 +132,6 @@ int main(int argc, const char *argv[])
             }
         );
 
-        //auto detail = make_shared<Meta>();
-        //detail->set<string>("path","");
-        //detail->serialize(tmppath + "rpg/"+dir+".json");
-        
         if(0 != status) {
             cerr << "Cannot enrage. (copy failed)" << endl;
             return 1;

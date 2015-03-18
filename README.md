@@ -29,7 +29,7 @@ rpg folder
 
 ###View the status of all rampaged folders
 ```
-rpg
+rpg -l
 ```
 
 ###View diff between RAM and HD versions
@@ -42,14 +42,9 @@ rpg -d folder
 rpg -w folder
 ```
 
-###Unmount a folder, remove RAM symlink, and restore old (HD) version
-```
-rpg -u folder
-```
-
 ###Discard ALL changes made to RAM version and unmount
 ```
-rpg -x folder
+rpg -r folder
 ```
 
 If your computer crashes while a folder is rampaged, you will only lose unwritten RAM changes.
